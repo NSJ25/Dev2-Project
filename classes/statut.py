@@ -31,7 +31,10 @@ class Statuts:
         self.__conn.commit()
 
     def get_statut(self):
-        pass
+        self.__cursor.execute(
+            "SELECT id, statut FROM Statuts"
+        )
+        return self.__cursor.fetchall()
 
     def get_statut_id(self):
         pass
