@@ -1,6 +1,5 @@
 from classes.database_manager import DatabaseManager
 
-
 class Status(DatabaseManager):
     def __init__(self):
         super().__init__()
@@ -28,11 +27,21 @@ class Status(DatabaseManager):
         self.commit()
 
     def get_status(self):
-        pass
+        self.execute(
+            "SELECT id, name FROM Status"
+        )
+        return self.fetchall()
 
-    def get_status_id(self):
-        pass
-
+    def get_status_id(self, text):
+        self.execute(
+            "SELECT id FROM Status WHERE name = ?",
+            (text,)
+        )
+        result = self.fetchone()
+        if result is not None:
+            return result[0]
+        else:
+            return -1
 
     if __name__ == "__main__":
         pass
