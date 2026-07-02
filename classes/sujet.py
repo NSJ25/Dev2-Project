@@ -1,7 +1,7 @@
 from pathlib import Path
 from sqlite3 import connect
 
-class Sujets:
+class Sujet:
     """Gestionnaire des sujets pour la base de données SQLite.
 
     Cette classe fournit des opérations CRUD sur la table `Sujets`.
@@ -59,7 +59,7 @@ class Sujets:
         )
         self.__conn.commit()
 
-    def get_sujet(self):
+    def get_sujets(self):
         """Récupère tous les sujets stockés en base de données.
 
         Returns:
@@ -83,6 +83,7 @@ class Sujets:
             "SELECT id FROM Sujets WHERE sujet = ?",
             (name,)
         )
+        self.__conn.commit()
         return self.__cursor.fetchall()
 
     if __name__ == "__main__":
