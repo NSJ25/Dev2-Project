@@ -33,6 +33,11 @@ class Sujets:
         self.__conn.commit()
 
     def delete_sujet(self, name):
+        """
+
+        :param name:str
+        :return:None
+        """
         self.__cursor.execute(
             "DELETE FROM Sujets WHERE sujet = ?",
             (name,)
@@ -40,8 +45,24 @@ class Sujets:
         self.__conn.commit()
 
     def get_sujet(self):
+        """
+
+        :return:tuple
+        """
         self.__cursor.execute(
             "SELECT id, sujet FROM Sujets"
+        )
+        return self.__cursor.fetchall()
+
+    def get_sujet_id(self, name):
+        """
+            
+        :param name:str
+        :return:int
+        """
+        self.__cursor.execute(
+            "SELECT id FROM Sujets WHERE sujet = ?",
+            (name,)
         )
         return self.__cursor.fetchall()
 
