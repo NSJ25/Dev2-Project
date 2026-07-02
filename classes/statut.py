@@ -16,11 +16,19 @@ class Statuts:
         )
         self.__conn.commit()
 
-    def update_statut(self):
-        pass
+    def update_statut(self, statut_id, new_name):
+        self.__cursor.execute(
+            "UPDATE Statuts SET statut = ? WHERE id = ?",
+            (new_name, statut_id)
+        )
+        self.__conn.commit()
 
-    def delete_statut(self):
-        pass
+    def delete_statut(self, name):
+        self.__cursor.execute(
+            "DELETE FROM Status WHERE statut = ?",
+            (name,)
+        )
+        self.__conn.commit()
 
     def get_statut(self):
         pass
