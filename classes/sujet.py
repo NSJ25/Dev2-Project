@@ -19,8 +19,20 @@ class Sujets:
         )
         self.__conn.commit()
 
+    def update_sujet(self, sujet_id, new_name):
+        """
 
-   
+        :param sujet_id:int
+        :param new_name:str
+        :return:None
+        """
+        self.__cursor.execute(
+            "UPDATE Sujets SET sujet = ? WHERE id = ?",
+            (new_name, sujet_id)
+        )
+        self.__conn.commit()
+
+    
 
     def __name__(self):
         pass
