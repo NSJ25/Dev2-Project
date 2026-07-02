@@ -32,6 +32,13 @@ class Sujets:
         )
         self.__conn.commit()
 
+    def delete_sujet(self, name):
+        self.__cursor.execute(
+            "DELETE FROM Sujets WHERE sujet = ?",
+            (name,)
+        )
+        self.__conn.commit()
+
     
 
     def __name__(self):
