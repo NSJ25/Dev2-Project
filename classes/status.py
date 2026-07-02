@@ -1,7 +1,7 @@
-from database_manager import DatabaseManager, as dbm
+from database_manager import DatabaseManager
 
 
-class Status(dbm):
+class Status(DatabaseManager):
     def __init__(self):
         super().__init__()
         pass
