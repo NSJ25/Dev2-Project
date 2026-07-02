@@ -9,8 +9,12 @@ class Statuts:
         self.__conn = connect(self.__db_path)
         self.__cursor = self.__conn.cursor()
 
-    def create_statut(self):
-        pass
+    def create_statut(self, name):
+        self.__cursor.execute(
+            "INSERT INTO Status (statut) VALEUS (?)",
+            (name,)
+        )
+        self.__conn.commit()
 
     def update_statut(self):
         pass
