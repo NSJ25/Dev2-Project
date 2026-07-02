@@ -1,4 +1,4 @@
-from database_manager import DatabaseManager
+from classes.database_manager import DatabaseManager
 
 class Subject(DatabaseManager):
     def __init__(self):
@@ -12,7 +12,7 @@ class Subject(DatabaseManager):
         self.commit()
 
 
-    def edit_subject(self, ident, text):
+    def edit_subject(self, text, ident):
         self.execute(
             "UPDATE Subjects SET name = ? WHERE id = ?",
             (text, ident)
@@ -45,4 +45,4 @@ class Subject(DatabaseManager):
             return -1
 
     if __name__ == "__main__":
-        pass
+        print("ok")

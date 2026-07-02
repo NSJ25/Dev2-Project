@@ -1,4 +1,4 @@
-from database_manager import DatabaseManager
+from classes.database_manager import DatabaseManager
 from bcrypt import hashpw, gensalt, checkpw
 
 

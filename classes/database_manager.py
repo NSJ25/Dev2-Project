@@ -4,7 +4,8 @@ from sqlite3 import connect
 
 class DatabaseManager:
     def __init__(self):
-        self._db_path = Path("..") / "database.db"
+        base_dir = Path(__file__).resolve().parent.parent
+        self._db_path = base_dir / "database.db"
         self._conn = connect(self._db_path)
         self._cursor = self._conn.cursor()
 
