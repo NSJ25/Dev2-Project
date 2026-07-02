@@ -1,6 +1,6 @@
 from pathlib import Path
 from sqlite3 import connect
-from bcrypt import hashpw, gensalt
+from bcrypt import hashpw, gensalt, checkpw
 
 class Utilisateur:
     def __init__(self):
@@ -9,17 +9,20 @@ class Utilisateur:
         self.__conn = connect(self.__db_path)
         self.__cursor = self.__conn.cursor()
 
-    def create_user(self, pseudo, password):
+    def create_user(self, nom, password):
         passwd = hashpw(password.encode("utf-8"),gensalt()).decode("utf-8")
+
         self.__cursor.execute(
-            "INSERT INTO Utilisateurs (nom, prenom, password) VALUES ( ?, ?)",
-            (pseudo, passwd)
+            "INSERT INTO Utilisateurs (nom, password) VALUES ( ?, ?, )",
+            (nom, passwd)
         )
         self.__conn.commit()
 
-    def update_user(self):
-        pass
-    
+    def update_nom(self,pseudo, password, nom, prenom):
+       pass
+
+    def update_passwd(self, pseudo, password, new_password):
+       pass
 
     def delete_user(self):
         pass
