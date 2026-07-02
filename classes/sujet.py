@@ -85,5 +85,5 @@ class Sujets:
         )
         return self.__cursor.fetchall()
 
-    def __name__(self):
+    if __name__ == "__main__":
         pass
