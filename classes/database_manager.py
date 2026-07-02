@@ -12,11 +12,11 @@ class DatabaseManager:
     def execute(self, sql, params=()):
         self._cursor.execute(sql, params)
 
-    @property
+
     def fetchone(self):
         return self._cursor.fetchone()
 
-    @property
+
     def fetchall(self):
         return self._cursor.fetchall()
 
