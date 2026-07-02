@@ -39,7 +39,11 @@ class Sujets:
         )
         self.__conn.commit()
 
-    
+    def get_sujet(self):
+        self.__cursor.execute(
+            "SELECT id, sujet FROM Sujets"
+        )
+        return self.__cursor.fetchall()
 
     def __name__(self):
         pass
