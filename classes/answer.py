@@ -14,17 +14,28 @@ class Answer(DatabaseManager):
         self.commit()
 
 
-    def edit_text(self):
-        self.execute()
-        pass
+    def edit_text(self, ident, text):
+        self.execute(
+        "UPDATE Answers SET answers_text = ? WHERE id = ?",
+    (text, ident)
+        )
+        self.commit()
 
 
-    def edit_is_correct(self):
-        pass
+    def edit_is_correct(self, ident, boolean):
+        self.execute(
+        "UPDATE Answers SET is_correct = ? WHERE id = ?",
+            (boolean, ident)
+        )
+        self.commit()
 
 
-    def edit_explanation(self):
-        pass
+    def edit_explanation(self, ident, txt):
+        self.execute(
+            "UPDATE Answers SET explanation = ? WHERE id = ?",
+            (txt, ident)
+        )
+        self.commit()
 
 
     def delete_answer(self):
