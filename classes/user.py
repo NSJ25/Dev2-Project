@@ -26,11 +26,21 @@ class User(DatabaseManager):
 
 
     def get_user_id(self, name:str):
-        pass
+        self.execute(
+            "SELECT id FROM Users WHERE username = ?",
+            (name,)
+        )
+        result = self.fetchone()
+        if result is not None:
+            return result[0]
+        return -1
 
 
     def get_users(self):
-        pass
+        self.execute(
+            "SELECT id, username FROM Users"
+        )
+        return self.fetchall()
 
 
     def delete_user(self, ident:int, name:str, password:str):
@@ -45,8 +55,7 @@ class User(DatabaseManager):
         result = self.fetchone()
         if result is not None:
             return checkpw(password.encode("utf-8"), result[0].encode("utf-8"))
-        else:
-            return False
+        return False
 
 
     if __name__ == "__main__":

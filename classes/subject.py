@@ -41,8 +41,7 @@ class Subject(DatabaseManager):
         result = self.fetchone()
         if result is not None:
             return result[0]
-        else:
-            return -1
+        return -1
 
     if __name__ == "__main__":
         pass
