@@ -14,7 +14,7 @@ class Answer(DatabaseManager):
         self.commit()
 
 
-    def edit_text(self, ident, text):
+    def edit_text(self, ident:int, text:str):
         self.execute(
         "UPDATE Answers SET answers_text = ? WHERE id = ?",
     (text, ident)
@@ -22,7 +22,7 @@ class Answer(DatabaseManager):
         self.commit()
 
 
-    def edit_is_correct(self, ident, boolean):
+    def edit_is_correct(self, ident:int, boolean:bool):
         self.execute(
         "UPDATE Answers SET is_correct = ? WHERE id = ?",
             (boolean, ident)
@@ -30,7 +30,7 @@ class Answer(DatabaseManager):
         self.commit()
 
 
-    def edit_explanation(self, ident, txt):
+    def edit_explanation(self, ident:int, txt:str):
         self.execute(
             "UPDATE Answers SET explanation = ? WHERE id = ?",
             (txt, ident)
@@ -38,7 +38,7 @@ class Answer(DatabaseManager):
         self.commit()
 
 
-    def delete_answer(self, ident):
+    def delete_answer(self, ident:int):
         self.execute(
         "DELETE FROM Answers WHERE id = ?",
     (ident,)
@@ -46,7 +46,7 @@ class Answer(DatabaseManager):
         self.commit()
 
 
-    def get_answers_by_question(self, question_id):
+    def get_answers_by_question(self, question_id:int):
         self.execute(
         "SELECT id, answers_text, is_correct, explanation FROM Answers WHERE question_id = ?",
     (question_id,)
