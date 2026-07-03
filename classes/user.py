@@ -10,8 +10,8 @@ class User(DatabaseManager):
     def add_user(self, name:str, password:str):
         passwd = hashpw(password.encode("utf-8"), gensalt()).decode("utf-8")
         self.execute(
-            "INSERT INTO Users (username, password) VALUES (?, ?)",
-            (name, passwd)
+        "INSERT INTO Users (username, password) VALUES (?, ?)",
+    (name, passwd)
         )
         self.commit()
 
@@ -27,8 +27,8 @@ class User(DatabaseManager):
 
     def get_user_id(self, name:str):
         self.execute(
-            "SELECT id FROM Users WHERE username = ?",
-            (name,)
+        "SELECT id FROM Users WHERE username = ?",
+        (name,)
         )
         result = self.fetchone()
         if result is not None:
@@ -43,14 +43,23 @@ class User(DatabaseManager):
         return self.fetchall()
 
 
-    def delete_user(self, ident:int, name:str, password:str):
-        pass
+    def delete_user(self, name:str, password:str):
+        if self.check(name, password):
+            self.execute(
+            "DELETE FROM Users WHERE usename = ?",
+                (name,)
+            )
+            self.commit()
+            return f"L'utilisateur {name} a été supprimé avec succès."
+        else:
+            return f"Nom d'utilisateur ou mot de passe incorrect."
 
 
-    def check(self,name:str, password:str):
+
+    def check(self, name:str, password:str):
         self.execute(
-            "SELECT password FROM Users WHERE username = ?",
-            (name,)
+        "SELECT password FROM Users WHERE username = ?",
+        (name,)
         )
         result = self.fetchone()
         if result is not None:
