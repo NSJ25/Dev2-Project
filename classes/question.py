@@ -3,7 +3,7 @@ from classes.database_manager import DatabaseManager
 
 class Question(DatabaseManager):
     def __init__(self):
-        super.__init__()
+        super().__init__()
 
     def add_question(self, text:str, subject_id:int, status_id:int, image:str=None):
         self.execute(
@@ -54,19 +54,29 @@ class Question(DatabaseManager):
 
 
     def get_questions(self):
-        pass
+        self.execute(
+        """ SELECT Q.id, Q.ext, S.name, ST.name, Q.image_path
+            FROM Questions AS Q 
+                JOIN Subjects AS S ON Q.subject_id = S.id
+                JOIN Status AS ST ON Q.status_id = ST.id
+        """)
+        return self.fetchall()
 
 
-    def get_question_id(self):
-        pass
+    def get_question_id(self, text):
+        self.execute()
+        return self.fetchone()
 
 
     def get_questions_subject(self):
-        pass
+        self.execute()
+        return self.fetchall()
+
 
 
     def get_questions_sub_stat(self):
-        pass
+        self.execute()
+        return self.fetchall()
 
 
     if __name__ == "__main__":
