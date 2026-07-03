@@ -20,29 +20,54 @@ class Question(DatabaseManager):
         )
         self.commit()
 
-    def edit_subject(self):
-        pass
 
-    def edit_status(self):
-        pass
+    def edit_subject(self, ident:int, subject_id:str):
+        self.execute(
+            "UPDATE Qusetions SET subject_id = ? WHERE id = ?",
+            (subject_id, ident)
+        )
+        self.commit()
 
-    def edit_image(self):
-        pass
 
-    def remove_question(self):
-        pass
+    def edit_status(self, ident:int, status_id:str):
+        self.execute(
+            "UPDATE Qusetions SET status_id = ? WHERE id = ?",
+            (status_id, ident)
+        )
+        self.commit()
+
+
+    def edit_image(self, ident:int, new_path:str):
+        self.execute(
+            "UPDATE Qusetions SET image_path = ? WHERE id = ?",
+            (new_path, ident)
+        )
+        self.commit()
+
+
+    def remove_question(self, ident:int):
+        self.execute(
+            "DELETE FROM Questions WHERE id = ?",
+            (ident,)
+        )
+        self.commit()
+
 
     def get_questions(self):
         pass
 
+
     def get_question_id(self):
         pass
+
 
     def get_questions_subject(self):
         pass
 
+
     def get_questions_sub_stat(self):
         pass
+
 
     if __name__ == "__main__":
         pass
