@@ -46,8 +46,12 @@ class Answer(DatabaseManager):
         self.commit()
 
 
-    def get_answers_by_qestion(self, question_id):
-        pass
+    def get_answers_by_question(self, question_id):
+        self.execute(
+        "SELECT id, answers_text, is_correct, explanation FROM Answers WHERE question_id = ?",
+    (question_id,)
+        )
+        return self.fetchall()
 
 
 
