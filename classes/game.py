@@ -5,7 +5,7 @@ class Game(DatabaseManager):
     def __init__(self):
         super().__init__()
 
-    def save_game(self, user_id,  score ):
+    def save_game(self, user_id:int,  score:int):
         date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.execute(
         "INSERT INTO Games (user_id, date_game, score) VALUES (?, ?, ?) ",
@@ -13,7 +13,7 @@ class Game(DatabaseManager):
         )
         self.commit()
 
-    def get_games_by_user(self, name):
+    def get_games_by_user(self, name:str):
         self.execute(
     """SELECT U.username, G.score, G.date_game 
             FROM Games AS G JOIN Users AS U ON G.user_id = U.id
@@ -24,7 +24,7 @@ class Game(DatabaseManager):
         return self.fetchall()
 
 
-    def get_games_by_date(self, date_game):
+    def get_games_by_date(self, date_game:str):
         date = datetime.strptime( date_game, "%d/%m/%Y").strftime("%Y-%m-%d")
         self.execute(
     """SELECT U.username, G.score, G.date_game 

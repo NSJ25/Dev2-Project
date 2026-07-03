@@ -5,21 +5,21 @@ class Status(DatabaseManager):
         super().__init__()
         pass
 
-    def add_status(self, text):
+    def add_status(self, text:str):
         self.execute(
             "INSERT INTO Status (name) VALUES (?)",
             (text,)
         )
         self.commit()
 
-    def edit_status(self,text, ident):
+    def edit_status(self, ident:int, text:str):
         self.execute(
             "UPDATE Status SET name = ? WHERE id = ?",
             (text, ident)
         )
         self.commit()
 
-    def remove_status(self, ident):
+    def remove_status(self, ident:int):
         self.execute(
             "DELETE FROM Status WHERE id = ?",
             (ident,)
@@ -32,7 +32,7 @@ class Status(DatabaseManager):
         )
         return self.fetchall()
 
-    def get_status_id(self, text):
+    def get_status_id(self, text:str):
         self.execute(
             "SELECT id FROM Status WHERE name = ?",
             (text,)

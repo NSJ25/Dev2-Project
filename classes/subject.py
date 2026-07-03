@@ -4,7 +4,7 @@ class Subject(DatabaseManager):
     def __init__(self):
         super().__init__()
 
-    def add_subject(self, text):
+    def add_subject(self, text:str):
         self.execute(
             "INSERT INTO Subjects (name) VALUES (?)",
             (text,)
@@ -12,14 +12,14 @@ class Subject(DatabaseManager):
         self.commit()
 
 
-    def edit_subject(self, text, ident):
+    def edit_subject(self, ident:int, text:str):
         self.execute(
             "UPDATE Subjects SET name = ? WHERE id = ?",
             (text, ident)
         )
         self.commit()
 
-    def remove_subject(self, ident):
+    def remove_subject(self, ident:int):
         self.execute(
             "DELETE FROM Subjects WHERE id = ?",
             (ident,)
@@ -33,7 +33,7 @@ class Subject(DatabaseManager):
         )
         return self.fetchall()
 
-    def get_subject_id(self, text):
+    def get_subject_id(self, text:str):
         self.execute(
             "SELECT id FROM Subjects WHERE name = ?",
             (text,)

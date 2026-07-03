@@ -5,7 +5,7 @@ class Question(DatabaseManager):
     def __init__(self):
         super().__init__()
 
-    def add_question(self, text:str, subject_id:int, status_id:int, image:str=None):
+    def add_question(self, text:str, subject_id:int, status_id:int, image:str=""):
         self.execute(
             "INSERT INTO Questions (text, subject_id, status_id, image_path) VALUES (?, ?, ?, ?)",
             (text, subject_id, status_id, image)
