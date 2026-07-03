@@ -18,11 +18,29 @@ class User(DatabaseManager):
 
 
     def change_username(self, name:str, new_name:str, password:str):
-        pass
+        if self.check(name, password):
+            self.execute(
+                "UPDATE Users SET username = ? WHERE username = ?",
+                (new_name, name)
+            )
+            self.commit()
+            return f"Le nom d'utilisateur {name} à ete changer en {new_name} avec succès."
+        else:
+            return f"Nom d'utilisateur ou mot de passe incorrect."
 
 
-    def change_password(self, name:str, password:str, naw_password:str):
-        pass
+    def change_password(self, name:str, password:str, new_password:str):
+        if self.check(name, password):
+            passwd = hashpw(new_password.encode("utf-8"), gensalt()).decode("utf-8")
+            self.execute(
+            "UPDATE FROM Users SET password = ? WHERE namev = ?",
+            (passwd, name)
+            )
+            self.commit()
+            return f"Le mot de passe de l'utilisateur {name} à ete changer avec succès."
+        else:
+            return f"Nom d'utilisateur ou mot de passe incorrect."
+
 
 
     def get_user_id(self, name:str):
