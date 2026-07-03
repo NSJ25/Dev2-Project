@@ -63,19 +63,35 @@ class Question(DatabaseManager):
         return self.fetchall()
 
 
-    def get_question_id(self, text):
-        self.execute()
+    def get_question_id(self, text:str):
+        self.execute("SELECT id FROM Questions WHERE text = ?",
+                     (text,))
         return self.fetchone()
 
 
-    def get_questions_subject(self):
-        self.execute()
+    def get_questions_subject(self, subject_id:int):
+        self.execute(
+    """ SELECT Q.id, Q.ext, S.name, ST.name, Q.image_path
+            FROM Questions AS Q 
+                JOIN Subjects AS S ON Q.subject_id = S.id
+                JOIN Status AS ST ON Q.status_id = ST.id
+            WHERE S.id = ? 
+        """,
+        (subject_id,)
+        )
         return self.fetchall()
 
 
 
-    def get_questions_sub_stat(self):
-        self.execute()
+    def get_questions_sub_stat(self, subject_id:int, status_id:int):
+        self.execute(
+    """ SELECT Q.id, Q.ext, S.name, ST.name, Q.image_path
+            FROM Questions AS Q 
+                JOIN Subjects AS S ON Q.subject_id = S.id
+                JOIN Status AS ST ON Q.status_id = ST.id
+            WHERE S.id = ? AND ST.id = ?
+        """,
+        (subject_id, status_id))
         return self.fetchall()
 
 
