@@ -38,11 +38,15 @@ class Answer(DatabaseManager):
         self.commit()
 
 
-    def delete_answer(self):
-        pass
+    def delete_answer(self, ident):
+        self.execute(
+        "DELETE FROM Answers WHERE id = ?",
+    (ident,)
+        )
+        self.commit()
 
 
-    def get_answers_by_qestion(self):
+    def get_answers_by_qestion(self, question_id):
         pass
 
 
