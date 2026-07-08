@@ -16,12 +16,12 @@ class Quiz:
         self._answer = Answer()
 
 
-    def create_quiz(self, subject_id):
+    def create_quiz(self, subject_id:int):
         self._quiz.clear()
         self._current_question = 0
         self._score = 0
         self._user_answers.clear()
-        self._finished = False
+        self.finished = False
 
         q_fragile = [] # status fragile
         q_en_cours =[] # status en cours
@@ -49,6 +49,31 @@ class Quiz:
             table.append(question)
 
 
+    def get_current_question(self):
+
+        if self._current_question >= len(self._quiz):
+            return None
+
+        return self._quiz[self._current_question]
+
+    def next_question(self):
+        if self.finished:
+            return False
+
+        self._current_question += 1
+
+        if self._current_question >= len(self._quiz):
+            self.finished = True
+            return False
+        return True
+
+    @property
+    def finished(self):
+        return self._finished
+
+    @finished.setter
+    def finished(self, value:bool):
+        self._finished = value
 
 
 
