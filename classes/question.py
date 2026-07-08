@@ -1,6 +1,5 @@
 from classes.database_manager import DatabaseManager
 
-
 class Question(DatabaseManager):
     def __init__(self):
         super().__init__()
