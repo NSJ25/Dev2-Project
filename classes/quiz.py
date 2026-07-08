@@ -67,6 +67,35 @@ class Quiz:
             return False
         return True
 
+
+    def get_current_answer(self):
+        question = self.get_current_question()
+
+        if question is None:
+            return None
+
+        answers = []
+        for row in self._answer.get_answers_by_question(question["id"]):
+            answer ={
+                "id": row[0],
+                "text" : row[1],
+                "is_correct" : row[2],
+                "explanation" : row[3]
+            }
+
+            answers.append(answer)
+        return answers
+
+    def get_correct_answer(self):
+
+        for correct_answer in self.get_current_answer():
+
+            if correct_answer["is_correct"]:
+                return correct_answer
+
+        return None
+
+
     @property
     def finished(self):
         return self._finished
