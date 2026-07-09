@@ -2,15 +2,12 @@ from classes.answer import Answer
 from classes.question import Question
 from random import sample, shuffle
 
-
-
-
 class Quiz:
     def __init__(self):
         self._quiz = []
         self._current_question = 0
         self._score = 0
-        self._user_answers = []
+        self._current_answers = []
         self._finished = False
         self._question = Question()
         self._answer = Answer()
@@ -20,8 +17,8 @@ class Quiz:
         self._quiz.clear()
         self._current_question = 0
         self._score = 0
-        self._user_answers.clear()
-        self.finished = False
+        self._current_answers.clear()
+        self._finished = False
 
         q_fragile = [] # status fragile
         q_en_cours =[] # status en cours
@@ -37,7 +34,8 @@ class Quiz:
 
         shuffle(self._quiz)
 
-    def prepare_question(self, table:list , data:list):
+    @staticmethod
+    def prepare_question(table:list , data:list):
         for row in data:
             question={
                 "id":row[0],
@@ -57,13 +55,13 @@ class Quiz:
         return self._quiz[self._current_question]
 
     def next_question(self):
-        if self.finished:
+        if self._finished:
             return False
 
         self._current_question += 1
 
         if self._current_question >= len(self._quiz):
-            self.finished = True
+            self._finished = True
             return False
         return True
 
@@ -74,7 +72,7 @@ class Quiz:
         if question is None:
             return None
 
-        answers = []
+        self._current_answers.clear()
         for row in self._answer.get_answers_by_question(question["id"]):
             answer ={
                 "id": row[0],
@@ -83,18 +81,25 @@ class Quiz:
                 "explanation" : row[3]
             }
 
-            answers.append(answer)
-        return answers
+            self._current_answers.append(answer)
+        return self._current_answers
+
 
     def get_correct_answer(self):
+        self.get_current_answer()
 
-        for correct_answer in self.get_current_answer():
+        for correct_answer in self._current_answers:
 
             if correct_answer["is_correct"]:
                 return correct_answer
-
         return None
 
+    def user_answer(self, answer):
+        value = self.get_correct_answer()
+        if value is not None and answer == value["id"]:
+            self._score += 1
+            return True
+        return False
 
     @property
     def finished(self):
@@ -104,8 +109,13 @@ class Quiz:
     def finished(self, value:bool):
         self._finished = value
 
+    @property
+    def score(self):
+        return self._score
 
-
+    @score.setter
+    def score(self, value:int):
+        self._score = value
 
 
 
