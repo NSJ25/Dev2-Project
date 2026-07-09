@@ -18,7 +18,7 @@ class User(DatabaseManager):
 
 
     def change_username(self, name:str, new_name:str, password:str):
-        if self._check(name, password):
+        if self.check(name, password):
             self.execute(
                 "UPDATE Users SET username = ? WHERE username = ?",
                 (new_name, name)
@@ -30,7 +30,7 @@ class User(DatabaseManager):
 
 
     def change_password(self, name:str, password:str, new_password:str):
-        if self._check(name, password):
+        if self.check(name, password):
             passwd = hashpw(new_password.encode("utf-8"), gensalt()).decode("utf-8")
             self.execute(
             "UPDATE Users SET password = ? WHERE username = ?",
@@ -62,7 +62,7 @@ class User(DatabaseManager):
 
 
     def delete_user(self, name:str, password:str):
-        if self._check(name, password):
+        if self.check(name, password):
             self.execute(
             "DELETE FROM Users WHERE username = ?",
                 (name,)
@@ -74,7 +74,7 @@ class User(DatabaseManager):
 
 
 
-    def _check(self, name:str, password:str):
+    def check(self, name:str, password:str):
         self.execute(
         "SELECT password FROM Users WHERE username = ?",
         (name,)
