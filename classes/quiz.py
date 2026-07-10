@@ -3,6 +3,10 @@ from classes.question import Question
 from random import sample, shuffle
 
 class Quiz:
+    """Représente un quiz composé de questions et réponses.
+
+    Gère la sélection des questions, l'état courant, les réponses et le score.
+    """
     def __init__(self):
         self._quiz = []
         self._current_question = 0
@@ -14,6 +18,13 @@ class Quiz:
 
 
     def create_quiz(self, subject_id:int):
+        """Construit un quiz pour un sujet donné.
+
+        La sélection suit une logique pondérée par statut (fragile, en cours, acquise).
+
+        Args:
+            subject_id (int): Identifiant du sujet pour lequel générer le quiz.
+        """
         self._quiz.clear()
         self._current_question = 0
         self._score = 0
@@ -36,6 +47,12 @@ class Quiz:
 
     @staticmethod
     def prepare_question(table:list , data:list):
+        """Convertit des tuples SQL en dictionnaires de question et les ajoute.
+
+        Args:
+            table (list): Liste cible où ajouter les dictionnaires de question.
+            data (list): Données brutes retournées par la requête SQL.
+        """
         for row in data:
             question={
                 "id":row[0],
@@ -48,6 +65,7 @@ class Quiz:
 
 
     def get_current_question(self):
+        """Renvoie la question courante du quiz ou `None` si terminé."""
 
         if self._current_question >= len(self._quiz):
             return None
@@ -55,6 +73,10 @@ class Quiz:
         return self._quiz[self._current_question]
 
     def next_question(self):
+        """Passe à la question suivante.
+
+        Retourne `True` si la navigation a réussi, `False` si le quiz est terminé.
+        """
         if self._finished:
             return False
 
@@ -67,6 +89,11 @@ class Quiz:
 
 
     def get_current_answer(self):
+        """Récupère les réponses associées à la question courante.
+
+        Retourne une liste de dictionnaires contenant `id`, `text`,
+        `is_correct` et `explanation`.
+        """
         question = self.get_current_question()
 
         if question is None:
@@ -86,6 +113,7 @@ class Quiz:
 
 
     def get_correct_answer(self):
+        """Retourne la réponse correcte pour la question courante, ou `None`."""
         self.get_current_answer()
 
         for correct_answer in self._current_answers:
@@ -95,6 +123,14 @@ class Quiz:
         return None
 
     def user_answer(self, answer):
+        """Enregistre la réponse de l'utilisateur et met à jour le score.
+
+        Args:
+            answer (int): Identifiant de la réponse choisie par l'utilisateur.
+
+        Returns:
+            bool: True si la réponse est correcte, False sinon.
+        """
         value = self.get_correct_answer()
         if value is not None and answer == value["id"]:
             self._score += 1

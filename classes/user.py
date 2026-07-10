@@ -3,6 +3,11 @@ from bcrypt import hashpw, gensalt, checkpw
 
 
 class User(DatabaseManager):
+    """Gestion des opérations liées aux utilisateurs.
+
+    Encapsule la création, modification, suppression et vérification
+    des utilisateurs stockés dans la table `Users`.
+    """
     def __init__(self):
         super().__init__()
 
@@ -30,6 +35,16 @@ class User(DatabaseManager):
 
 
     def change_password(self, name:str, password:str, new_password:str):
+        """Change le mot de passe d'un utilisateur après vérification.
+
+        Args:
+            name (str): Nom de l'utilisateur.
+            password (str): Mot de passe actuel.
+            new_password (str): Nouveau mot de passe.
+
+        Returns:
+            str: Message indiquant le résultat de l'opération.
+        """
         if self.check(name, password):
             passwd = hashpw(new_password.encode("utf-8"), gensalt()).decode("utf-8")
             self.execute(
@@ -44,6 +59,7 @@ class User(DatabaseManager):
 
 
     def get_user_id(self, name:str):
+        """Renvoie l'identifiant d'un utilisateur à partir de son nom, ou -1."""
         self.execute(
         "SELECT id FROM Users WHERE username = ?",
         (name,)
@@ -55,6 +71,7 @@ class User(DatabaseManager):
 
 
     def get_users(self):
+        """Retourne la liste des utilisateurs (id, username)."""
         self.execute(
             "SELECT id, username FROM Users"
         )
@@ -62,6 +79,15 @@ class User(DatabaseManager):
 
 
     def delete_user(self, name:str, password:str):
+        """Supprime un utilisateur après vérification du mot de passe.
+
+        Args:
+            name (str): Nom de l'utilisateur.
+            password (str): Mot de passe pour authentifier la suppression.
+
+        Returns:
+            str: Message indiquant le résultat de l'opération.
+        """
         if self.check(name, password):
             self.execute(
             "DELETE FROM Users WHERE username = ?",
@@ -73,8 +99,12 @@ class User(DatabaseManager):
             return f"Nom d'utilisateur ou mot de passe incorrect."
 
 
-
     def check(self, name:str, password:str):
+        """Vérifie qu'un couple nom/mot de passe est valide.
+
+        Returns:
+            bool: True si les identifiants sont corrects, False sinon.
+        """
         self.execute(
         "SELECT password FROM Users WHERE username = ?",
         (name,)
