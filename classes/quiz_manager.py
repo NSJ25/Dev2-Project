@@ -1,3 +1,0 @@
-class QuizManager:
-    def __init__(self):
-        pass
