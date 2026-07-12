@@ -1,5 +1,29 @@
 from pathlib import Path
-from sqlite3 import connect
+from sqlite3 import connect, Error as SQLiteError
+
+
+class DatabaseError(Exception):
+    """Erreur générique liée à la base de données."""
+
+
+class TransactionError(DatabaseError):
+    """Erreur survenue pendant la gestion d'une transaction."""
+
+
+def transactional(method):
+    """Décorateur pour valider ou annuler une transaction automatiquement."""
+    def wrapper(self, *args, **kwargs):
+        try:
+            result = method(self, *args, **kwargs)
+            self.commit()
+            return result
+        except Exception as exc:
+            try:
+                self.rollback()
+            except Exception:
+                pass
+            raise
+    return wrapper
 
 
 class DatabaseManager:
@@ -16,35 +40,68 @@ class DatabaseManager:
         self._conn = connect(self._db_path)
         self._cursor = self._conn.cursor()
 
+    def __enter__(self):
+        """Entrée dans le contexte géré par `with`."""
+        return self
 
-    def execute(self, sql, params=()):
+    def __exit__(self, exc_type, exc, traceback):
+        """Sortie du contexte : rollback en cas d'erreur, fermeture après traitement."""
+        if exc_type is not None:
+            try:
+                self.rollback()
+            except Exception as rollback_exc:
+                raise TransactionError("Échec de rollback") from rollback_exc
+        else:
+            self.commit()
+        self.close()
+        return False
+
+    def execute(self, sql:str, params:tuple=()):
         """Exécute une requête SQL avec paramètres optionnels.
 
         Args:
             sql (str): Requête SQL à exécuter.
             params (tuple): Paramètres à passer à la requête.
         """
-        self._cursor.execute(sql, params)
-
+        try:
+            self._cursor.execute(sql, params)
+        except SQLiteError as exc:
+            raise DatabaseError(str(exc)) from exc
 
     def fetchone(self):
         """Récupère une seule ligne du résultat de la dernière requête."""
-        return self._cursor.fetchone()
-
+        try:
+            return self._cursor.fetchone()
+        except SQLiteError as exc:
+            raise DatabaseError(str(exc)) from exc
 
     def fetchall(self):
         """Récupère toutes les lignes du résultat de la dernière requête."""
-        return self._cursor.fetchall()
-
+        try:
+            return self._cursor.fetchall()
+        except SQLiteError as exc:
+            raise DatabaseError(str(exc)) from exc
 
     def commit(self):
         """Valide (commit) la transaction courante."""
-        self._conn.commit()
+        try:
+            self._conn.commit()
+        except SQLiteError as exc:
+            raise DatabaseError(str(exc)) from exc
 
+    def rollback(self):
+        """Annule la transaction courante."""
+        try:
+            self._conn.rollback()
+        except SQLiteError as exc:
+            raise TransactionError(str(exc)) from exc
 
     def close(self):
         """Ferme la connexion à la base de données."""
-        self._conn.close()
+        try:
+            self._conn.close()
+        except SQLiteError as exc:
+            raise DatabaseError(str(exc)) from exc
 
-if __name__ == "__main__":
-    pass
+    if __name__ == "__main__":
+        pass
