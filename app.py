@@ -1,6 +1,7 @@
 from classes.quiz import Quiz
 from classes.session import Session
 from classes.game import Game
+from classes.user import User
 
 from textual.app import App
 from screens.menu import MenuScreen
@@ -12,9 +13,10 @@ from screens.setting import SettingScreen
 class QuizApp(App):
     def __init__(self):
         super().__init__()
-        self._session = Session()
-        self._game = Game()
-        self._quiz = Quiz()
+        self.session = Session()
+        self.game = Game()
+        self.quiz = Quiz()
+        self.user = User()
 
     SCREENS = {
         "menu": MenuScreen,
