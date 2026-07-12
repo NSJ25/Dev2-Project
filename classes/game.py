@@ -1,4 +1,4 @@
-from classes.database_manager import DatabaseManager
+from classes.database_manager import DatabaseManager, transactional
 from datetime import datetime
 
 class Game(DatabaseManager):
@@ -10,6 +10,7 @@ class Game(DatabaseManager):
     def __init__(self):
         super().__init__()
 
+    @transactional
     def save_game(self, user_id:int,  score:int):
         """Enregistre une partie pour un utilisateur avec le score.
 
@@ -22,7 +23,8 @@ class Game(DatabaseManager):
         "INSERT INTO Games (user_id, date_game, score) VALUES (?, ?, ?) ",
     (user_id, date_now, score)
         )
-        self.commit()
+
+
 
     def get_games_by_user(self, name:str):
         """Récupère l'historique des parties pour un utilisateur trié par date.
@@ -43,6 +45,7 @@ class Game(DatabaseManager):
         return self.fetchall()
 
 
+
     def get_games_by_date(self, date_game:str):
         """Récupère les parties jouées à une date donnée.
 
@@ -52,7 +55,12 @@ class Game(DatabaseManager):
         Returns:
             list: Liste de tuples (username, score, date_game).
         """
-        date = datetime.strptime( date_game, "%d/%m/%Y").strftime("%Y-%m-%d")
+
+        try:
+            date = datetime.strptime(date_game,"%d/%m/%Y").strftime("%Y-%m-%d")
+        except ValueError:
+            raise ValueError("La date doit être au format jj/mm/aaaa.")
+
         self.execute(
     """SELECT U.username, G.score, G.date_game 
             FROM Games AS G JOIN Users AS U ON G.user_id = U.id
