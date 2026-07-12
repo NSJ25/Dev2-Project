@@ -1,4 +1,4 @@
-from classes.database_manager import DatabaseManager
+from classes.database_manager import DatabaseManager, transactional, DatabaseError
 
 
 class Answer(DatabaseManager):
@@ -10,7 +10,8 @@ class Answer(DatabaseManager):
     def __init__(self):
         super().__init__()
 
-
+    
+    @transactional
     def add_answer(self, question_id:int, text:str, is_correct:bool=False, explanation:str=""):
         """Ajoute une nouvelle réponse pour une question donnée.
 
@@ -24,9 +25,10 @@ class Answer(DatabaseManager):
         "INSERT INTO Answers (question_id, answers_text, is_correct, explanation) VALUES (?, ?, ?, ?)",
     (question_id, text, is_correct, explanation)
         )
-        self.commit()
 
 
+
+    @transactional
     def edit_text(self, ident:int, text:str):
         """Modifie le texte d'une réponse existante.
 
@@ -38,9 +40,13 @@ class Answer(DatabaseManager):
         "UPDATE Answers SET answers_text = ? WHERE id = ?",
     (text, ident)
         )
-        self.commit()
+
+        if self.rowcount == 0:
+            raise DatabaseError("Réponse introuvable.")
 
 
+
+    @transactional
     def edit_is_correct(self, ident:int, boolean:bool):
         """Met à jour le drapeau `is_correct` d'une réponse.
 
@@ -52,9 +58,13 @@ class Answer(DatabaseManager):
         "UPDATE Answers SET is_correct = ? WHERE id = ?",
             (boolean, ident)
         )
-        self.commit()
+
+        if self.rowcount == 0:
+            raise DatabaseError("Réponse introuvable.")
 
 
+
+    @transactional
     def edit_explanation(self, ident:int, txt:str):
         """Modifie l'explication d'une réponse.
 
@@ -66,9 +76,13 @@ class Answer(DatabaseManager):
             "UPDATE Answers SET explanation = ? WHERE id = ?",
             (txt, ident)
         )
-        self.commit()
+
+        if self.rowcount == 0:
+            raise DatabaseError("Réponse introuvable.")
 
 
+
+    @transactional
     def delete_answer(self, ident:int):
         """Supprime une réponse par son identifiant.
 
@@ -79,9 +93,12 @@ class Answer(DatabaseManager):
         "DELETE FROM Answers WHERE id = ?",
     (ident,)
         )
-        self.commit()
 
+        if self.rowcount == 0:
+            raise DatabaseError("Réponse introuvable.")
+        
 
+    
     def get_answers_by_question(self, question_id:int):
         """Récupère toutes les réponses d'une question.
 
@@ -98,6 +115,5 @@ class Answer(DatabaseManager):
         return self.fetchall()
 
 
-
-    if __name__ == "__main__":
-        pass
+if __name__ == "__main__":
+    pass

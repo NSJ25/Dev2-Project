@@ -96,6 +96,10 @@ class DatabaseManager:
         except SQLiteError as exc:
             raise TransactionError(str(exc)) from exc
 
+    @property
+    def rowcount(self):
+        return self._cursor.rowcount
+
     def close(self):
         """Ferme la connexion à la base de données."""
         try:
@@ -103,5 +107,5 @@ class DatabaseManager:
         except SQLiteError as exc:
             raise DatabaseError(str(exc)) from exc
 
-    if __name__ == "__main__":
-        pass
+if __name__ == "__main__":
+    pass
