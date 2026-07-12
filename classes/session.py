@@ -11,7 +11,7 @@ class Session:
         self._current_user = None
         self._connected = False
 
-    def login(self, username, password):
+    def login(self, username:str, password:str):
         """Tente de connecter un utilisateur.
 
         Si un utilisateur est déjà connecté, il est déconnecté avant la nouvelle tentative.
@@ -34,8 +34,13 @@ class Session:
 
     def logout(self):
         """Déconnecte l'utilisateur courant et réinitialise l'état."""
+        if self._current_user is None:
+            return "Aucun utilisateur n'est actuellement connecté."
+
         self._current_user = None
         self._connected = False
+
+        return "Déconnexion réussie."
 
 
     @property
@@ -48,3 +53,5 @@ class Session:
         """Retourne le nom de l'utilisateur connecté ou None."""
         return self._current_user
 
+if __name__ == "__main__":
+    pass

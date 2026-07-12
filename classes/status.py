@@ -1,4 +1,5 @@
-from classes.database_manager import DatabaseManager
+from classes.database_manager import DatabaseManager, transactional, DatabaseError
+
 
 class Status(DatabaseManager):
     """Gestion des statuts possibles pour une question.
@@ -7,8 +8,9 @@ class Status(DatabaseManager):
     """
     def __init__(self):
         super().__init__()
-        pass
 
+
+    @transactional
     def add_status(self, text:str):
         """Ajoute un nouveau statut.
 
@@ -19,8 +21,9 @@ class Status(DatabaseManager):
             "INSERT INTO Status (name) VALUES (?)",
             (text,)
         )
-        self.commit()
 
+
+    @transactional
     def edit_status(self, ident:int, text:str):
         """Modifie le nom d'un statut.
 
@@ -32,8 +35,12 @@ class Status(DatabaseManager):
             "UPDATE Status SET name = ? WHERE id = ?",
             (text, ident)
         )
-        self.commit()
+        
+        if self.rowcount == 0:
+            raise DatabaseError("Statut introuvable.")
 
+
+    @transactional
     def remove_status(self, ident:int):
         """Supprime un statut par identifiant.
 
@@ -44,7 +51,10 @@ class Status(DatabaseManager):
             "DELETE FROM Status WHERE id = ?",
             (ident,)
         )
-        self.commit()
+
+        if self.rowcount == 0:
+            raise DatabaseError("Statut introuvable.")
+
 
     def get_status(self):
         """Retourne la liste des statuts (id, nom)."""
@@ -65,5 +75,5 @@ class Status(DatabaseManager):
         return -1
 
 
-    if __name__ == "__main__":
-        pass
+if __name__ == "__main__":
+    pass

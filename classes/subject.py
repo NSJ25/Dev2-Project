@@ -1,4 +1,4 @@
-from classes.database_manager import DatabaseManager
+from classes.database_manager import DatabaseManager, transactional, DatabaseError
 
 class Subject(DatabaseManager):
     """Gestion des sujets de questions.
@@ -8,6 +8,7 @@ class Subject(DatabaseManager):
     def __init__(self):
         super().__init__()
 
+    @transactional
     def add_subject(self, text:str):
         """Ajoute un nouveau sujet.
 
@@ -18,9 +19,9 @@ class Subject(DatabaseManager):
             "INSERT INTO Subjects (name) VALUES (?)",
             (text,)
         )
-        self.commit()
 
 
+    @transactional
     def edit_subject(self, ident:int, text:str):
         """Modifie le nom d'un sujet.
 
@@ -32,8 +33,12 @@ class Subject(DatabaseManager):
             "UPDATE Subjects SET name = ? WHERE id = ?",
             (text, ident)
         )
-        self.commit()
 
+        if self.rowcount == 0:
+            raise DatabaseError("Sujet introuvable.")
+
+
+    @transactional
     def remove_subject(self, ident:int):
         """Supprime un sujet par identifiant.
 
@@ -44,7 +49,10 @@ class Subject(DatabaseManager):
             "DELETE FROM Subjects WHERE id = ?",
             (ident,)
         )
-        self.commit()
+
+        if self.rowcount == 0:
+            raise DatabaseError("Sujet introuvable.")
+
 
 
     def get_subjects(self):
@@ -65,5 +73,5 @@ class Subject(DatabaseManager):
             return result[0]
         return -1
 
-    if __name__ == "__main__":
-        pass
+if __name__ == "__main__":
+    pass

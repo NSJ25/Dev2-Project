@@ -151,9 +151,11 @@ class Quiz:
 
     @score.setter
     def score(self, value:int):
+        if value < 0:
+            raise ValueError("Score invalide")
         self._score = value
 
 
 
-    if __name__ == "__main__":
-        pass
+if __name__ == "__main__":
+    pass

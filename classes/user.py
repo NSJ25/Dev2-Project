@@ -1,6 +1,14 @@
-from classes.database_manager import DatabaseManager
+from classes.database_manager import DatabaseManager, transactional, DatabaseError
 from bcrypt import hashpw, gensalt, checkpw
 
+class UserNotFoundError(DatabaseError):
+    """Utilisateur introuvable."""
+    pass
+
+
+class AuthenticationError(DatabaseError):
+    """Erreur d'authentification."""
+    pass
 
 class User(DatabaseManager):
     """Gestion des opérations liées aux utilisateurs.
@@ -11,50 +19,103 @@ class User(DatabaseManager):
     def __init__(self):
         super().__init__()
 
-
+    @transactional
     def add_user(self, name:str, password:str):
+        if not isinstance(name, str) or not isinstance(password, str):
+            raise TypeError("Les champs doivent contenir une chaîne de caractères")
+
+        if name.strip() == "" or password.strip() == "":
+            raise ValueError("Les champs ne peuvent pas être vides")
+
         passwd = hashpw(password.encode("utf-8"), gensalt()).decode("utf-8")
+
         self.execute(
         "INSERT INTO Users (username, password) VALUES (?, ?)",
     (name, passwd)
         )
-        self.commit()
 
 
+    @transactional
+    def change_username(self, name: str, new_name: str, password: str):
 
-    def change_username(self, name:str, new_name:str, password:str):
-        if self.check(name, password):
-            self.execute(
-                "UPDATE Users SET username = ? WHERE username = ?",
-                (new_name, name)
+        if not isinstance(name, str) or not isinstance(new_name, str) or not isinstance(password, str):
+            raise TypeError("Les champs doivent contenir une chaîne de caractères")
+
+        if name.strip() == "" or new_name.strip() == "" or password.strip() == "":
+            raise ValueError("Les champs ne peuvent pas être vides")
+
+        if not self.check(name, password):
+            raise AuthenticationError(
+                "Nom d'utilisateur ou mot de passe incorrect."
             )
-            self.commit()
-            return f"Le nom d'utilisateur {name} à ete changer en {new_name} avec succès."
-        else:
-            return f"Nom d'utilisateur ou mot de passe incorrect."
 
+        self.execute(
+            "UPDATE Users SET username = ? WHERE username = ?",
+            (new_name, name)
+        )
 
-    def change_password(self, name:str, password:str, new_password:str):
-        """Change le mot de passe d'un utilisateur après vérification.
+        if self._cursor.rowcount == 0:
+            raise UserNotFoundError(
+                "Utilisateur introuvable."
+            )
 
-        Args:
-            name (str): Nom de l'utilisateur.
-            password (str): Mot de passe actuel.
-            new_password (str): Nouveau mot de passe.
+        return True
 
-        Returns:
-            str: Message indiquant le résultat de l'opération.
-        """
-        if self.check(name, password):
-            passwd = hashpw(new_password.encode("utf-8"), gensalt()).decode("utf-8")
-            self.execute(
+    @transactional
+    def change_password(self, name: str, password: str, new_password: str):
+        if not isinstance(name, str) or not isinstance(password, str) or not isinstance(new_password, str):
+            raise TypeError("Les champs doivent contenir une chaîne de caractères")
+
+        if name.strip() == "" or password.strip() == "" or new_password.strip() == "":
+            raise ValueError("Les champs ne peuvent pas être vides")
+
+        if not self.check(name, password):
+            raise AuthenticationError(
+                "Nom d'utilisateur ou mot de passe incorrect."
+            )
+
+        passwd = hashpw(
+            new_password.encode("utf-8"),
+            gensalt()
+        ).decode("utf-8")
+
+        self.execute(
             "UPDATE Users SET password = ? WHERE username = ?",
             (passwd, name)
+        )
+
+        if self._cursor.rowcount == 0:
+            raise UserNotFoundError(
+                "Utilisateur introuvable."
             )
-            self.commit()
-            return f"Le mot de passe de l'utilisateur {name} à ete changer avec succès."
-        else:
-            return f"Nom d'utilisateur ou mot de passe incorrect."
+
+        return True
+
+    @transactional
+    def delete_user(self, name: str, password: str):
+
+        if not isinstance(name, str) or not isinstance(password, str):
+            raise TypeError("Les champs doivent contenir une chaîne de caractères")
+
+        if name.strip() == "" or password.strip() == "":
+            raise ValueError("Les champs ne peuvent pas être vides")
+
+        if not self.check(name, password):
+            raise AuthenticationError(
+                "Nom d'utilisateur ou mot de passe incorrect."
+            )
+
+        self.execute(
+            "DELETE FROM Users WHERE username = ?",
+            (name,)
+        )
+
+        if self._cursor.rowcount == 0:
+            raise UserNotFoundError(
+                "Utilisateur introuvable."
+            )
+
+        return True
 
 
 
@@ -78,33 +139,18 @@ class User(DatabaseManager):
         return self.fetchall()
 
 
-    def delete_user(self, name:str, password:str):
-        """Supprime un utilisateur après vérification du mot de passe.
-
-        Args:
-            name (str): Nom de l'utilisateur.
-            password (str): Mot de passe pour authentifier la suppression.
-
-        Returns:
-            str: Message indiquant le résultat de l'opération.
-        """
-        if self.check(name, password):
-            self.execute(
-            "DELETE FROM Users WHERE username = ?",
-                (name,)
-            )
-            self.commit()
-            return f"L'utilisateur {name} a été supprimé avec succès."
-        else:
-            return f"Nom d'utilisateur ou mot de passe incorrect."
-
-
     def check(self, name:str, password:str):
         """Vérifie qu'un couple nom/mot de passe est valide.
 
         Returns:
             bool: True si les identifiants sont corrects, False sinon.
         """
+        if not isinstance(name, str) or not isinstance(password, str):
+            raise TypeError("Les champs doivent contenir une chaîne de caractères")
+
+        if name.strip() == "" or password.strip() == "":
+            raise ValueError("Les champs ne peuvent pas être vides")
+
         self.execute(
         "SELECT password FROM Users WHERE username = ?",
         (name,)
@@ -115,5 +161,6 @@ class User(DatabaseManager):
         return False
 
 
-    if __name__ == "__main__":
-        pass
+
+if __name__ == "__main__":
+    pass

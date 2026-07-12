@@ -1,4 +1,4 @@
-from classes.database_manager import DatabaseManager
+from classes.database_manager import DatabaseManager, transactional, DatabaseError
 
 class Question(DatabaseManager):
     """Gestion des questions.
@@ -9,6 +9,7 @@ class Question(DatabaseManager):
     def __init__(self):
         super().__init__()
 
+    @transactional
     def add_question(self, text:str, subject_id:int, status_id:int, image:str=""):
         """Ajoute une nouvelle question en base.
 
@@ -22,9 +23,8 @@ class Question(DatabaseManager):
             "INSERT INTO Questions (text, subject_id, status_id, image_path) VALUES (?, ?, ?, ?)",
             (text, subject_id, status_id, image)
         )
-        self.commit()
 
-
+    @transactional
     def edit_text(self, ident:int, new_text:str):
         """Met à jour le texte d'une question.
 
@@ -36,9 +36,11 @@ class Question(DatabaseManager):
             "UPDATE Questions SET text = ? WHERE id = ?",
             (new_text, ident)
         )
-        self.commit()
 
+        if self.rowcount == 0:
+            raise DatabaseError("Question introuvable.")
 
+    @transactional
     def edit_subject(self, ident:int, subject_id:int):
         """Change le `subject_id` d'une question.
 
@@ -50,9 +52,11 @@ class Question(DatabaseManager):
             "UPDATE Questions SET subject_id = ? WHERE id = ?",
             (subject_id, ident)
         )
-        self.commit()
 
+        if self.rowcount == 0:
+            raise DatabaseError("Question introuvable.")
 
+    @transactional
     def edit_status(self, ident:int, status_id:int):
         """Met à jour le `status_id` d'une question.
 
@@ -64,9 +68,12 @@ class Question(DatabaseManager):
             "UPDATE Questions SET status_id = ? WHERE id = ?",
             (status_id, ident)
         )
-        self.commit()
+
+        if self.rowcount == 0:
+            raise DatabaseError("Question introuvable.")
 
 
+    @transactional
     def edit_image(self, ident:int, new_path:str):
         """Modifie le chemin d'image associé à une question.
 
@@ -78,9 +85,12 @@ class Question(DatabaseManager):
             "UPDATE Questions SET image_path = ? WHERE id = ?",
             (new_path, ident)
         )
-        self.commit()
+
+        if self.rowcount == 0:
+            raise DatabaseError("Question introuvable.")
 
 
+    @transactional
     def remove_question(self, ident:int):
         """Supprime une question par identifiant.
 
@@ -91,7 +101,10 @@ class Question(DatabaseManager):
             "DELETE FROM Questions WHERE id = ?",
             (ident,)
         )
-        self.commit()
+
+        if self.rowcount == 0:
+            raise DatabaseError("Question introuvable.")
+
 
 
     def get_questions(self):
@@ -172,5 +185,5 @@ class Question(DatabaseManager):
         return self.fetchall()
 
 
-    if __name__ == "__main__":
-        pass
+if __name__ == "__main__":
+    pass
