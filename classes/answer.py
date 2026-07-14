@@ -37,7 +37,7 @@ class Answer(DatabaseManager):
             text (str): Nouveau texte.
         """
         self.execute(
-        "UPDATE Answers SET answers_text = ? WHERE id = ?",
+        "UPDATE Answers SET answer_text = ? WHERE id = ?",
     (text, ident)
         )
 
@@ -109,7 +109,7 @@ class Answer(DatabaseManager):
             list: Liste de tuples (id, answers_text, is_correct, explanation).
         """
         self.execute(
-        "SELECT id, answers_text, is_correct, explanation FROM Answers WHERE question_id = ?",
+        "SELECT id, answer_text, is_correct, explanation FROM Answers WHERE question_id = ?",
     (question_id,)
         )
         return self.fetchall()

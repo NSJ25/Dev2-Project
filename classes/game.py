@@ -11,16 +11,16 @@ class Game(DatabaseManager):
         super().__init__()
 
     @transactional
-    def save_game(self, user_id:int,  score:int):
+    def save_game(self, user_id:int,  score:str):
         """Enregistre une partie pour un utilisateur avec le score.
 
         Args:
             user_id (int): Identifiant de l'utilisateur.
-            score (int): Score obtenu.
+            score (str): Score obtenu.
         """
         date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.execute(
-        "INSERT INTO Games (user_id, date_game, score) VALUES (?, ?, ?) ",
+        "INSERT INTO Games (user_id, game_date, score) VALUES (?, ?, ?) ",
     (user_id, date_now, score)
         )
 
@@ -36,10 +36,10 @@ class Game(DatabaseManager):
             list: Liste de tuples (username, score, date_game).
         """
         self.execute(
-    """SELECT U.username, G.score, G.date_game 
+    """SELECT U.username, G.score, G.game_date 
             FROM Games AS G JOIN Users AS U ON G.user_id = U.id
             WHERE U.username = ? 
-            ORDER BY G.date_game DESC""",
+            ORDER BY G.game_date DESC""",
     (name,)
         )
         return self.fetchall()
@@ -62,10 +62,10 @@ class Game(DatabaseManager):
             raise ValueError("La date doit être au format jj/mm/aaaa.")
 
         self.execute(
-    """SELECT U.username, G.score, G.date_game 
+    """SELECT U.username, G.score, G.game_date
             FROM Games AS G JOIN Users AS U ON G.user_id = U.id
-            WHERE DATE(G.date_game) = ? 
-            ORDER BY G.date_game DESC""",
+            WHERE DATE(G.game_date) = ? 
+            ORDER BY G.game_date DESC""",
     (date,)
         )
         return self.fetchall()

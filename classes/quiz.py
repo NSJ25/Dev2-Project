@@ -155,6 +155,9 @@ class Quiz:
             raise ValueError("Score invalide")
         self._score = value
 
+    @property
+    def total_questions(self):
+        return self._quiz
 
 
 if __name__ == "__main__":

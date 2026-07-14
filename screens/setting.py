@@ -122,8 +122,8 @@ class SettingScreen(Screen):
         titre = Figlet(font="standard")
         yield Label(titre.renderText("Reglages"))
 
-        yield Button(r"\[ Menu ]", id="menu")
-        yield Label("Bienvenue sur la page des reglages")
+        yield Button(r"\[ MENU ]", id="menu")
+        yield Label(f"Bienvenue {self.app.session.current_user} sur la page des reglages")
 
         yield Label("---------------------------------------------------------------")
         yield Button(r"\[ Ajouter un sujet ]", id="add_sub")

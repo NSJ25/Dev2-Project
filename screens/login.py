@@ -73,7 +73,7 @@ class LoginScreen(Screen):
     def compose(self):
         titre = Figlet(font="standard")
         yield Label(titre.renderText("Connexion"))
-        yield Button(r"\[ Menu ]", id="menu")
+        yield Button(r"\[ MENU ]", id="menu")
 
         yield Label(
             """
