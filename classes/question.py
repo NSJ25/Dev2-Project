@@ -9,6 +9,7 @@ class Question(DatabaseManager):
     def __init__(self):
         super().__init__()
 
+
     @transactional
     def add_question(self, text:str, subject_id:int, status_id:int, image:str=""):
         """Ajoute une nouvelle question en base.
@@ -23,6 +24,9 @@ class Question(DatabaseManager):
             "INSERT INTO Questions (text, subject_id, status_id, image_path) VALUES (?, ?, ?, ?)",
             (text, subject_id, status_id, image)
         )
+        question_id = self._cursor.lastrowid
+        return question_id
+
 
     @transactional
     def edit_text(self, ident:int, new_text:str):

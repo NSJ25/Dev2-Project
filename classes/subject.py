@@ -15,6 +15,9 @@ class Subject(DatabaseManager):
         Args:
             text (str): Nom du sujet.
         """
+
+
+
         self.execute(
             "INSERT INTO Subjects (name) VALUES (?)",
             (text,)

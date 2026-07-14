@@ -22,7 +22,7 @@ class Answer(DatabaseManager):
             explanation (str): Explication associée à la réponse.
         """
         self.execute(
-        "INSERT INTO Answers (question_id, answers_text, is_correct, explanation) VALUES (?, ?, ?, ?)",
+        "INSERT INTO Answers (question_id, answer_text, is_correct, explanation) VALUES (?, ?, ?, ?)",
     (question_id, text, is_correct, explanation)
         )
 
