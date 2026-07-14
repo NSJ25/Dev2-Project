@@ -190,7 +190,7 @@ class LoginScreen(Screen):
         return username, password
 
     def show_message(self, message):
-        self.query_one("#message").update(message)
+        self.query_one("#message").update(str(message))
 
     def clear_fields(self):
         username = self.query_one("#username")
@@ -201,7 +201,8 @@ class LoginScreen(Screen):
 
         username.focus()
 
-
+    def on_mount(self):
+        self.update_status()
 
     def update_status(self):
         label = self.query_one("#status")

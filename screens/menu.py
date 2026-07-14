@@ -101,7 +101,15 @@ class MenuScreen(Screen):
             self.app.push_screen("login")
 
         elif event.button.id == "quiz":
+            if not self.app.session.is_connected:
+                self.app.push_screen("login")
+                return
+
             self.app.push_screen("quiz")
 
         elif event.button.id == "setting":
+            if not self.app.session.is_connected:
+                self.app.push_screen("login")
+                return
+
             self.app.push_screen("setting")
