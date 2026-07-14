@@ -122,7 +122,7 @@ class SettingScreen(Screen):
         titre = Figlet(font="standard")
         yield Label(titre.renderText("Reglages"))
 
-        yield Button("Menu", id="menu")
+        yield Button(r"\[ Menu ]", id="menu")
         yield Label("Bienvenue sur la page des reglages")
 
         yield Label("---------------------------------------------------------------")
@@ -184,7 +184,7 @@ class SettingScreen(Screen):
 
     async def add_sub_action(self):
         self.show_message("")
-        name = self.query_one("#sub_txt").value
+        name = self.query_one("#sub_txt").value.strip()
 
         if not isinstance(name, str):
             self.show_message("Les champs doivent contenir une chaîne de caractères")
@@ -312,8 +312,8 @@ class SettingScreen(Screen):
             return
 
 
-        question_text = self.query_one("#quest_text").value
-        image = self.query_one("#quest_img").value
+        question_text = self.query_one("#quest_text").value.strip()
+        image = self.query_one("#quest_img").value.strip()
 
         subject_id = int(select_subject.value)
         status_id = int(select_status.value)
@@ -360,7 +360,7 @@ class SettingScreen(Screen):
     async def save_answers(self):
 
         get_answer = lambda i: (
-            self.query_one(f"#ans{i}").value,
+            self.query_one(f"#ans{i}").value.strip(),
             self.query_one(f"#ans{i}_ok", Checkbox).value
         )
 
@@ -376,7 +376,7 @@ class SettingScreen(Screen):
             self.show_message("Il doit y avoir exactement une réponse correcte.")
             return
 
-        explanation = self.query_one("#explication").value
+        explanation = self.query_one("#explication").value.strip()
 
         try:
             for text, correct in answers:
@@ -507,4 +507,4 @@ class SettingScreen(Screen):
 
 
     def show_message(self, message):
-        self.query_one("#message").update(message)
+        self.query_one("#message").update(str(message))

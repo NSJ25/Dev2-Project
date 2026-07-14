@@ -184,8 +184,8 @@ class LoginScreen(Screen):
             self.show_message(msg)
 
     def get_credentials(self):
-        username = self.query_one("#username").value
-        password = self.query_one("#password").value
+        username = self.query_one("#username").value.strip()
+        password = self.query_one("#password").value.strip()
 
         return username, password
 
